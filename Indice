@@ -1,0 +1,21 @@
+# Sistemas embebidos - 1C2021
+
+> ### Indice
+> 1. SCU (Martín Anus)
+>   - Introducción al esquemático de la CIAA
+>   - Registros del SCU
+>   - Estructura de datos que "matchean" el SCU
+>   - Estratos de las primitivas
+> 2. GPIO (Francisco Cufré)
+>   - Registros del GPIO
+>   - Estructura de datos que "matchean" el GPIO
+>   - Estratos de las primitivas
+> 3. Timer (Matias Viñas)
+>   - Registros del GPIO
+>   - Estructura de datos que "matchean" el GPIO
+>   - Estratos de las primitivas
+> 4. Puerto Serie (Rocío de Aguirre)
+>   - Registros del GPIO
+>   - Estructura de datos que "matchean" el GPIO
+>   - Estratos de las primitivas
+
