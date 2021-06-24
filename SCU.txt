@@ -1,0 +1,116 @@
+SCU (System Configuration Unit)
+
+Introducción:
+
+Los registros SCU se utilizan para configurar los distintos modos de funcionamiento que tienen los pins del micro. 
+
+Los puertos digitales se agrupan en 16 puertos entre P0-P9 y PA-PF  
+NXP LPC4337 JBD144 - EDU CIAA - tiene P0-P7 y P9
+(Atención, los nombres de los pines no corresponden a los asignados para GPIO)
+
+SCU determina la funcion y modo electrido de los pines digitales. Por defecto está configurada la función 0 para todos los pines y se enecuentra habilitado el pull-up.
+
+Para los pines que soportan funciones analógicas y digitales, se pueden habilitar la función anaógica en los registros de selección de función de ADC en la SCU.  También, el registro de delay del clock para los pines SDRAM EMC_CLK y los registros que seleccionan los pines de interrupción se encuentran en la SCU. 
+
+El set de entradas y salidas analógicas para ADC y DAC como tambien la mayoria de los pines USB se encuentran separados y NO son controlables a traves del SCU. 
+
+
+
+Detalle de Registros:
+
+Capitulo 17 de UM10503.pdf - Manual del Usuario - UM10503 LPC43xx/LPC43Sxx ARM Cortex-M4/M0 multi-core microcontroller
+
+Table 191. Register overview: System Control Unit (SCU) (base address 0x4008 6000) - Page 412 - UM10503.pdf
+
+Rangos Relativos para cada sección:
+
+Puertos P0-P9 y PA-PF
+0x000 - 0x498 -
+
+PA-PF (estos no estan en NXP LPC4337 JBD144)
+0x500 - 0x7AC
+
+CLKn pins
+0xC00 - 0xC0C
+
+USB1 USB1_DP/USB1_DM pins and I 2 C-bus open-drain pins
+0xC80 - 0xC84
+
+ADC pin select registers
+0xC88 - 0xC90
+
+EMC delay register
+0xD00
+
+SD/MMC delay register
+0xD80
+
+Pin interrupt select registers
+0xE00 - 0xE04
+
+
+
+
+
+Esquemáticos: 
+
+Esquemáticos que asocian funciones y posiciones en placa EDU-CIAA:
+	EDU-CIAA-NXP v1.1 Board - 2019-01-03 v5r0.pdf
+
+
+
+
+
+Primitivas: 
+
+En scu-18xx:43xx.h se definen todas las Macros de SCU y las primitivas: 
+
+
+/**
+ * SCU function and mode selection definitions
+ * See the User Manual for specific modes and functions supoprted by the
+ * various LPC18xx/43xx devices. Functionality can vary per device.
+ */
+#define SCU_MODE_PULLUP            (0x0 << 3)		/*!< Enable pull-up resistor at pad */
+#define SCU_MODE_REPEATER          (0x1 << 3)		/*!< Enable pull-down and pull-up resistor at resistor at pad (repeater mode) */
+#define SCU_MODE_INACT             (0x2 << 3)		/*!< Disable pull-down and pull-up resistor at resistor at pad */
+#define SCU_MODE_PULLDOWN          (0x3 << 3)		/*!< Enable pull-down resistor at pad */
+#define SCU_MODE_HIGHSPEEDSLEW_EN  (0x1 << 5)		/*!< Enable high-speed slew */
+#define SCU_MODE_INBUFF_EN         (0x1 << 6)		/*!< Enable Input buffer */
+#define SCU_MODE_ZIF_DIS           (0x1 << 7)		/*!< Disable input glitch filter */
+#define SCU_MODE_4MA_DRIVESTR      (0x0 << 8)		/*!< Normal drive: 4mA drive strength */
+#define SCU_MODE_8MA_DRIVESTR      (0x1 << 8)		/*!< Medium drive: 8mA drive strength */
+#define SCU_MODE_14MA_DRIVESTR     (0x2 << 8)		/*!< High drive: 14mA drive strength */
+#define SCU_MODE_20MA_DRIVESTR     (0x3 << 8)		/*!< Ultra high- drive: 20mA drive strength */
+#define SCU_MODE_FUNC0             0x0				/*!< Selects pin function 0 */
+#define SCU_MODE_FUNC1             0x1				/*!< Selects pin function 1 */
+#define SCU_MODE_FUNC2             0x2				/*!< Selects pin function 2 */
+#define SCU_MODE_FUNC3             0x3				/*!< Selects pin function 3 */
+#define SCU_MODE_FUNC4             0x4				/*!< Selects pin function 4 */
+#define SCU_MODE_FUNC5             0x5				/*!< Selects pin function 5 */
+#define SCU_MODE_FUNC6             0x6				/*!< Selects pin function 6 */
+#define SCU_MODE_FUNC7             0x7				/*!< Selects pin function 7 */
+#define SCU_PINIO_FAST             (SCU_MODE_INACT | SCU_MODE_HIGHSPEEDSLEW_EN | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS)
+
+#define PORT_OFFSET					0x80			/** Port offset definition */
+#define PIN_OFFSET					0x04			/** Pin offset definition */
+
+
+
+
+Primitivas:
+ 
+Chip_SCU_PinMuxSet(port, pin, modefunc) --> para setear el modo de funcionamiento de un determinado pin
+
+Chip_SCU_ClockPinMuxSet(clknum, modefunc) --> configura los las funciones de los pines de clock.
+
+Chip_SCU_GPIOIntPinSel(PortSel, Portnum, PinNum) -->setea los pines GPIO que haran interrupciones
+
+Chip_SCU_I2C0PinConfig(I2C0Mode) --> configura el pin de I2C
+
+Chip_SCU_ADC_Channel_Config(ADC_ID, channel) --> configura el canal de ADC que se pase como parametro. 
+
+Chip_SCU_DAC_Analog_Config() --> habilita la funcion del DAC en el pin P4_4
+
+Chip_SCU_SetPinMuxing(pinArray, arrayLength) --> se setea el modo de funcionamiento de un conjunto de pines. llama a  Chip_SCU_PinMuxSet() para cada elemento del array de entrada. 
+
