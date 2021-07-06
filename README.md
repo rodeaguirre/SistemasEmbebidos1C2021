@@ -1,6 +1,12 @@
 # SistemasEmbebidos1C2021
 # Trabajo Práctico N°1
 ---
+# Index
+
+- [Heading](#TIMERS)
+- [Heading](#CLOCK)
+- [Heading](#DELAY)
+
 ---
 
 # TIMERS
@@ -233,7 +239,7 @@ STATIC CHIP_CCU_CLK_T Chip_TIMER_GetClockIndex(LPC_TIMER_T *pTMR)
 }
 ```
 
-# Clock
+# CLOCK
 
 ### Clock Generation Unit
 
@@ -313,7 +319,7 @@ void Chip_Clock_Disable(CHIP_CCU_CLK_T clk)
 }
 ```
 
-# Delay
+# DELAY
 
 ## Primitivas y structs - Delay - Nivel Sapi
 
