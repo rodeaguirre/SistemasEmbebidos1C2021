@@ -3,9 +3,9 @@
 ---
 # Index
 
-- [Heading](#TIMERS)
-- [Heading](#CLOCK)
-- [Heading](#DELAY)
+- [TIMERS](#TIMERS)
+- [CLOCK](#CLOCK)
+- [DELAY](#DELAY)
 
 ---
 
