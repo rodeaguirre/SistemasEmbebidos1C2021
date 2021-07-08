@@ -127,7 +127,7 @@ La estructura que representa los registros de la SCU es``` LPC_SCU_T``` que .se 
 
 Figura 2.5: estructura que representa los registros en SCU.
 
-Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea ``` #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE)```  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
+Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea `` #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE)``  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por pin es LPC\_PIN\_INT\_T, que se muestra en la figura 2.6.
 
@@ -137,8 +137,9 @@ Figura 2.6: estructura que representa los registros de interrupción por pin.
 
 Las líneas
 ```c 
-#define LPC_PIN_INT_BASE 0x40087000 ``` y
-
+#define LPC_PIN_INT_BASE 0x40087000 
+``` 
+y
 ``` c
 #define LPC_GPIO_PIN_INT ((LPC_PIN_INT_T*) LPC_PIN_INT_BASE)
 ``` 
