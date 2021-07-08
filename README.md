@@ -127,7 +127,7 @@ La estructura que representa los registros de la SCU es``` LPC_SCU_T``` que .se 
 
 Figura 2.5: estructura que representa los registros en SCU.
 
-Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea `` #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE)``  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
+Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea ``c #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE)``  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por pin es LPC\_PIN\_INT\_T, que se muestra en la figura 2.6.
 
@@ -155,15 +155,20 @@ Figura 2.7: estructura que representa los registros de interrupción por grupo.
 
 En el caso del grupo 0, las etiquetas
 
-**#define** LPC\_GPIO\_GROUP\_INT0\_BASE 0x40088000 y
-
-**#define** LPC\_GPIOGROUP ((LPC\_GPIOGROUPINT\_T\*) LPC\_GPIO\_GROUP\_INT0\_BASE)
+```c
+#define LPC_GPIO_GROUP_INT0_BASE 0x40088000
+``` 
+y
+```c
+#define LPC_GPIOGROUP ((LPC_GPIOGROUPINT_T*) LPC_GPIO_GROUP_INT0_BASE)
+```
 
 generan un puntero a la dirección inicial de dichos registros.
 
 En el caso del grupo 1 está la etiqueta
-
-**#define** LPC\_GPIO\_GROUP\_INT1\_BASE 0x40089000
+```c
+#define LPC_GPIO_GROUP_INT1_BASE 0x40089000
+```
 
 Que marca el inicio de los registros de este grupo.
 
@@ -183,126 +188,183 @@ void Chip\_GPIO\_DeInit(LPC_GPIO_T *pGPIO)
 Función: des inicializa el bloque GPIO.
 
 Archivo: gpio\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIO\_SetDir**(LPC\_GPIO\_T \*pGPIO, uint8\_t portNum, uint32\_t bitValue, uint8\_t out): En base a los bits que están en 1 en bitvalue pone los pines como entrada (out = 0), o salida (out = 1).
-
-Archivo: gpio\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIO\_SetPinState**(LPC\_GPIO\_T \*pGPIO, uint8\_t port, uint8\_t pin,**bool** setting): Escribe el estado del pin modificando el grupo B.
+```c
+STATIC INLINE void Chip_GPIO_SetDir(LPC_GPIO_T *pGPIO, uint8_t portNum, uint32_t bitValue, uint8_t out)
+```
+Función: En base a los bits que están en 1 en bitvalue pone los pines como entrada (out = 0), o salida (out = 1).
 
 Archivo: gpio\_18xx\_43xx.h
 
-STATIC INLINE **bool**** Chip\_GPIO\_ReadPortBit**(LPC\_GPIO\_T \*pGPIO, uint32\_t port, uint8\_t pin): Lee el estado del pin a partir del grupo B de registros.
+```c
+STATIC INLINE void Chip_GPIO_SetPinState(LPC_GPIO_T *pGPIO, uint8\_t port, uint8_t pin,bool setting)
+```
+Función: Escribe el estado del pin modificando el grupo B.
+
+Archivo: gpio\_18xx\_43xx.h
+```c
+STATIC INLINE bool Chip_GPIO_ReadPortBit(LPC_GPIO\_T *pGPIO, uint32_t port, uint8_t pin)
+```
+Función: Lee el estado del pin a partir del grupo B de registros.
 
 Archivo: gpio\_18xx\_43xx.h
 
 Funciones Útiles:
-
-STATIC INLINE **void**** Chip\_GPIO\_SetPinToggle**(LPC\_GPIO\_T \*pGPIO, uint8\_t port, uint8\_t pin): Togglea el valor de un pin.
+```c
+STATIC INLINE void Chip_GPIO_SetPinToggle(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin)
+```
+Función: Togglea el valor de un pin.
 
 Archivo: gpio\_18xx\_43xx.h
 
 IO: Nivel Sapi
-
-**static**** void ****gpioObtainPinInit** ( gpioMap\_t pin, int8\_t \*pinNamePort, int8\_t \*pinNamePin, int8\_t \*func, int8\_t \*gpioPort, int8\_t \*gpioPin ): obtiene el valor de pin físico, puerto físico, función gpio, pin gpio y puerto gpio a partir de la etiqueta de la EDU-CIAA.
+```c
+static void gpioObtainPinInit ( gpioMap_t pin, int8_t *pinNamePort, int8_t *pinNamePin, int8_t *func, int8_t *gpioPort, int8_t *gpioPin )
+```
+Función: obtiene el valor de pin físico, puerto físico, función gpio, pin gpio y puerto gpio a partir de la etiqueta de la EDU-CIAA.
 
 Archivo: sapi\_gpio.c
 
 De uso común:
-
-bool\_t **gpioInit** ( gpioMap\_t pin, gpioInit\_t config ): Si se envía &quot;ENABLE&quot; en config, activa la función de gpio del microcontrolador. En otro caso establece la función gpio del pin seleccionado, en base a config lo puede poner como salida o como entrada. Si es entrada se puede poner con o sin resistencia de pullup y/o pulldown. Devuelve false si si pasan VCC o GND como pin o si la configuración no es correcta.
-
-Archivo: sapi\_gpio.c
-
-bool\_t **gpioWrite** ( gpioMap\_t pin, bool\_t value ): Escribe el valor de un pin. Se debe haber puesto como salida con **gpioInit** antes de usarla.
+```c
+bool_t gpioInit ( gpioMap_t pin, gpioInit_t config )
+```
+Función: Si se envía &quot;ENABLE&quot; en config, activa la función de gpio del microcontrolador. En otro caso establece la función gpio del pin seleccionado, en base a config lo puede poner como salida o como entrada. Si es entrada se puede poner con o sin resistencia de pullup y/o pulldown. Devuelve false si si pasan VCC o GND como pin o si la configuración no es correcta.
 
 Archivo: sapi\_gpio.c
-
-bool\_t **gpioToggle** ( gpioMap\_t pin ): Alterna el valor del pin si está como salida. Se debe haber puesto como salida con **gpioInit** antes de usarla.
+```c
+bool_t **gpioWrite** ( gpioMap_t pin, bool_t value )
+```
+Función: Escribe el valor de un pin. Se debe haber puesto como salida con **gpioInit** antes de usarla.
 
 Archivo: sapi\_gpio.c
+```c
+bool_t **gpioToggle** ( gpioMap_t pin )
+```
+Función: Alterna el valor del pin si está como salida. Se debe haber puesto como salida con **gpioInit** antes de usarla.
 
-bool\_t **gpioRead** ( gpioMap\_t pin ): Lee el valor del pin. Se debe haber inicializado con **gpioInit** antes de usarla.
+Archivo: sapi\_gpio.c
+```c
+bool_t **gpioRead** ( gpioMap_t pin )
+```
+Función: Lee el valor del pin. Se debe haber inicializado con **gpioInit** antes de usarla.
 
 Archivo: sapi\_gpio.c
 
 INTERRUPCIONES POR PIN: Nivel Chip (NXP)
-
-STATIC INLINE **void**** Chip\_SCU\_GPIOIntPinSel**(uint8\_t PortSel, uint8\_t PortNum, uint8\_t PinNum): Asocia una interrupción por pin a un pin de la GPIO.
+```
+STATIC INLINE void Chip_SCU_GPIOIntPinSel(uint8_t PortSel, uint8_t PortNum, uint8_t PinNum)
+```
+Función: Asocia una interrupción por pin a un pin de la GPIO.
 
 Archivo: scu\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_Init**(LPC\_PIN\_INT\_T \*pPININT): Inicializa el bloque de interrupciones por pin. Se debe usar despué de la función Chip\_GPIO\_Init.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_DeInit**(LPC\_PIN\_INT\_T \*pPININT): des inicializa el bloque de interrupciones por pin.
+```c
+STATIC INLINE void Chip_PININT_Init(LPC_PIN_INT_T *pPININT)
+```
+Función: Inicializa el bloque de interrupciones por pin. Se debe usar despué de la función Chip\_GPIO\_Init.
 
 Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_SetPinModeEdge**(LPC\_PIN\_INT\_T \*pPININT, uint32\_t pins): setea el trigger por flanco.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_SetPinModeLevel**(LPC\_PIN\_INT\_T \*pPININT, uint32\_t pins): setea el trigger por nivel.
+```c
+STATIC INLINE void Chip_PININT_DeInit(LPC_PIN_INT_T *pPININT)
+```
+Función: des inicializa el bloque de interrupciones por pin.
 
 Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_EnableIntHigh**(LPC\_PIN\_INT\_T \*pPININT, uint32\_t pins): habilita interrupción por flanco ascendente o por nivel.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_DisableIntHigh**(LPC\_PIN\_INT\_T \*pPININT, uint32\_t pins): deshabilita interrupción por flanco ascendente o por nivel.
+```c
+STATIC INLINE void Chip_PININT_SetPinModeEdge(LPC_PIN_INT_T *pPININT, uint32_t pins)
+```
+Función: setea el trigger por flanco.
 
 Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_EnableIntLow**(LPC\_PIN\_INT\_T \*pPININT, uint32\_t pins): habilita interrupción por flanco descendente o pone el nivel en LOW para interrupción por nivel.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_PININT\_DisableIntLow**(LPC\_PIN\_INT\_T \*pPININT, uint32\_t pins): deshabilita interrupción por flanco descendente o pone el nivel en HIGH para interrupción por nivel.
+```c
+STATIC INLINE void Chip_PININT_SetPinModeLevel**(LPC_PIN_INT_T *pPININT, uint32_t pins)
+```
+Función: setea el trigger por nivel.
 
 Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_PININT_EnableIntHigh(LPC_PIN_INT_T *pPININT, uint32_t pins)
+```
+Función: habilita interrupción por flanco ascendente o por nivel.
 
-STATIC INLINE uint32\_t **Chip\_PININT\_GetIntStatus** (LPC\_PIN\_INT\_T \*pPININT): obtiene el estado de la interrupción.
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_PININT_DisableIntHigh(LPC_PIN_INT_T *pPININT, uint32_t pins)
+```
+Función: deshabilita interrupción por flanco ascendente o por nivel.
+
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_PININT_EnableIntLow**(LPC_PIN_INT_T *pPININT, uint32_t pins)
+```
+Función: habilita interrupción por flanco descendente o pone el nivel en LOW para interrupción por nivel.
+
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_PININT_DisableIntLow(LPC_PIN_INT_T *pPININT, uint32_t pins)
+```
+Función: deshabilita interrupción por flanco descendente o pone el nivel en HIGH para interrupción por nivel.
+
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE uint32_t Chip\_PININT\_GetIntStatus (LPC\_PIN_INT_T *pPININT)
+```
+Función: obtiene el estado de la interrupción.
 
 Archivo: pinint\_18xx\_43xx.h
 
 INTERRUPCIONES POR GRUPO: Nivel Chip (NXP)
-
-STATIC INLINE **bool**** Chip\_GPIOGP\_GetIntStatus**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group): obtiene el estado de la interrupción.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_SelectOrMode**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group) : pone la interruption en modo OR.
+```c
+STATIC INLINE bool Chip_GPIOGP_GetIntStatus(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group)
+```
+Función: obtiene el estado de la interrupción.
 
 Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_SelectAndMode**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group) : pone la interruption en modo AND.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_SelectEdgeMode**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group) : pone el modo de activación en flanco.
+```c
+STATIC INLINE void Chip_GPIOGP_SelectOrMode(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group)
+```
+Función: pone la interruption en modo OR.
 
 Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_SelectLevelMode**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group) : pone el modo de activación en nivel.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_SelectLowLevel**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group, uint8\_t port, uint32\_t pinMask) : setea el modo de activación en estado LOW.
+```c
+STATIC INLINE void Chip_GPIOGP_SelectAndMode(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group)
+```
+Función: pone la interruption en modo AND.
 
 Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_SelectHighLevel**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group, uint8\_t port, uint32\_t pinMask) : setea el modo de activación en estado HIGH.
-
-Archivo: pinint\_18xx\_43xx.h
-
-STATIC INLINE **void**** Chip\_GPIOGP\_DisableGroupPins**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group, uint8\_t port, uint32\_t pinMask) : Desasocia un pin a la interrupción.
+```c
+STATIC INLINE void Chip_GPIOGP_SelectEdgeMode(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group)
+```
+Función: pone el modo de activación en flanco.
 
 Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_GPIOGP_SelectLevelMode(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group)
+```
+Función: pone el modo de activación en nivel.
 
-STATIC INLINE **void**** Chip\_GPIOGP\_EnableGroupPins**(LPC\_GPIOGROUPINT\_T \*pGPIOGPINT, uint8\_t group, uint8\_t port, uint32\_t pinMask) : Asocia un pin a la interrupción.
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_GPIOGP_SelectLowLevel(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group, uint8_t port, uint32_t pinMask)
+```
+Función: setea el modo de activación en estado LOW.
+
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_GPIOGP_SelectHighLevel(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group, uint8_t port, uint32_t pinMask)
+```
+Función: setea el modo de activación en estado HIGH.
+
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_GPIOGP_DisableGroupPins(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group, uint8_t port, uint32_t pinMask)
+```
+Función: Desasocia un pin a la interrupción.
+
+Archivo: pinint\_18xx\_43xx.h
+```c
+STATIC INLINE void Chip_GPIOGP_EnableGroupPins(LPC_GPIOGROUPINT_T *pGPIOGPINT, uint8_t group, uint8_t port, uint32_t pinMask)
+```
+Función: Asocia un pin a la interrupción.
 
 Archivo: pinint\_18xx\_43xx.h
 
