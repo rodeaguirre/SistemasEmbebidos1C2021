@@ -93,7 +93,7 @@ Tabla 1.3:
 
 IO
 
-La estructura que marche los registros de GPIO con su número de puerto y pin es LPC\_GPIO\_T. que se muestra en la figura 2.1.
+La estructura que marche los registros de GPIO con su número de puerto y pin es``` LPC_GPIO_T```. que se muestra en la figura 2.1.
 
 ![Figura GPIO 2.1](/GPIO/LPC_GPIO_T.jpg)
 
@@ -101,11 +101,11 @@ Figura 2.1: Estructura que representa los registros GPIO.
 
 En la figura 2.1 se puede observar que IO corresponde a los registros de lectura y escritura y O corresponde a los de solo escritura. También se puede observar que cada grupo se agregan elementos de más para que cada agrupo posea el offset correcto.
 
-También existe una etiqueta ```c LPC_GPIO_PORT_BASE ```a la que se le asigna el valor 0x400F4000, que corresponde a la dirección de inicio de los registros GPIO. Además, se encuentra la línea ```c #define LPC_GPIO_PORT ((LPC_GPIO_T *) LPC_GPIO_PORT_BASE)``` que genera un puntero a ```c LPC_GPIO_T ```con el valor de la dirección de inicio.
+También existe una etiqueta ``` LPC_GPIO_PORT_BASE ```a la que se le asigna el valor 0x400F4000, que corresponde a la dirección de inicio de los registros GPIO. Además, se encuentra la línea ``` #define LPC_GPIO_PORT ((LPC_GPIO_T *) LPC_GPIO_PORT_BASE)``` que genera un puntero a ``` LPC_GPIO_T ```con el valor de la dirección de inicio.
 
 Como es necesario saber el numero de puerto y pin para poder gestionar el GPIO, existen otras 3 estructuras que sirven para obtener el numero de pin y puerto a partir de la etiqueta que le asigna la EDU-CIAA a cada pin del microcontrolador.
 
-La primera estructura es un ```c enum gpioMap\_t```, que se encuentra en el archivo sapi\_peripheral\_map.h. enum. Lo que hace es asignarle a cada etiqueta de la EDU-CIAA un valor de posición. La segunda estructura es un vector de ```c pinInitGpioLpc4337_t```, llamado gpioPinsInit, que se encuentra en el archivo sapi\_gpio.c. Lo que hace es obtener un```c pinInitGpioLpc4337_t```, a partir de la posición asignada a cada etiquta. Por último, el```c pinInitGpioLpc4337_t ```contiene 5```c int8_t```, correspondientes al puerto físico, pin físico, número de función asignada a gpio, puerto gpio y pin gpio. En conjunto estas 3 estructuras lo que hacen en conjunto es apartir de una estiqueta poder manejar la SCU para poner la función gpio y poder manejar la gpio. En las figuras 2.2 a 2.4 se puede observar la estructura```c de pinInitGpioLpc4337_t```.
+La primera estructura es un ``` enum gpioMap\_t```, que se encuentra en el archivo sapi\_peripheral\_map.h. enum. Lo que hace es asignarle a cada etiqueta de la EDU-CIAA un valor de posición. La segunda estructura es un vector de ``` pinInitGpioLpc4337_t```, llamado gpioPinsInit, que se encuentra en el archivo sapi\_gpio.c. Lo que hace es obtener un``` pinInitGpioLpc4337_t```, a partir de la posición asignada a cada etiquta. Por último, el``` pinInitGpioLpc4337_t ```contiene 5``` int8_t```, correspondientes al puerto físico, pin físico, número de función asignada a gpio, puerto gpio y pin gpio. En conjunto estas 3 estructuras lo que hacen en conjunto es apartir de una estiqueta poder manejar la SCU para poner la función gpio y poder manejar la gpio. En las figuras 2.2 a 2.4 se puede observar la estructura``` de pinInitGpioLpc4337_t```.
 
 ![Figura GPIO 2.2](/GPIO/pinInitGpioLpc4337_t.jpg)
 
@@ -121,13 +121,13 @@ Figura 2.4: estructura de pinInitLpc4337\_t
 
 INTERRUPCIONES POR PIN
 
-La estructura que representa los registros de la SCU es```c LPC_SCU_T``` que .se muestra en la figura 2.5, donde lo importante para las interrupciones es el atributo PINTSEL.
+La estructura que representa los registros de la SCU es``` LPC_SCU_T``` que .se muestra en la figura 2.5, donde lo importante para las interrupciones es el atributo PINTSEL.
 
 ![Figura GPIO 2.5](/GPIO/LPC_SCU_T.jpg)
 
 Figura 2.5: estructura que representa los registros en SCU.
 
-Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea **#define** LPC\_SCU ((LPC\_SCU\_T\*) LPC\_SCU\_BASE) que genera un puntero a LPC\_SCU\_T con el valor de la dirección de inicio.
+Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea ``` #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE)```  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por pin es LPC\_PIN\_INT\_T, que se muestra en la figura 2.6.
 
@@ -136,11 +136,12 @@ La estructura que representa los registros de GPIO para el manejo de interrupci�
 Figura 2.6: estructura que representa los registros de interrupción por pin.
 
 Las líneas
+```c 
+#define LPC_PIN_INT_BASE 0x40087000 ``` y
 
-**#define** LPC\_PIN\_INT\_BASE 0x40087000 y
-
-**#define** LPC\_GPIO\_PIN\_INT ((LPC\_PIN\_INT\_T\*) LPC\_PIN\_INT\_BASE)
-
+``` c
+#define LPC_GPIO_PIN_INT ((LPC_PIN_INT_T*) LPC_PIN_INT_BASE)
+``` 
 Generan un puntero a la dirección inicial de dichos registros.
 
 INTERRUPCIONES POR GRUPO
@@ -171,11 +172,14 @@ IO: Nivel Chip (NXP)
 ```c
 void Chip_GPIO_Init(LPC_GPIO_T *pGPIO)
 ```
-Función inicializa el bloque GPIO. pGPIO debe contener la dirección de inicio de los registros de gpio.
+Función: inicializa el bloque GPIO. pGPIO debe contener la dirección de inicio de los registros de gpio.
 
 Archivo: gpio\_18xx\_43xx.h
 
-**void**** Chip\_GPIO\_DeInit**(LPC\_GPIO\_T \*pGPIO): des inicializa el bloque GPIO.
+```c
+void Chip\_GPIO\_DeInit(LPC_GPIO_T *pGPIO)
+```
+Función: des inicializa el bloque GPIO.
 
 Archivo: gpio\_18xx\_43xx.h
 
