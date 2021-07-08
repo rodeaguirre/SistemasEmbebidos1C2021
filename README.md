@@ -301,7 +301,7 @@ Archivo: pinint\_18xx\_43xx.h
 
 1. Diagrama
 
-![Figura GPIO 2.7](/GPIO/GPIO\ resumen.jpg)
+![Figura GPIO 4.1](/GPIO/GPIO resumen.jpg)
 
 ---
 # Index
