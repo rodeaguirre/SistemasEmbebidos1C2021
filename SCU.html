@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="scu-system-configuration-unit"><strong>SCU (System Configuration Unit)</strong></h1>
+<h2 id="introducción"><strong>Introducción:</strong></h2>
+<p>Los registros SCU se utilizan para configurar los distintos modos de funcionamiento que tienen los pins del micro.</p>
+<p>Los puertos digitales se agrupan en 16 puertos entre P0-P9 y PA-PF<br>
+NXP LPC4337 JBD144 - EDU CIAA - tiene P0-P7 y P9</p>
+<p>(Atención, los nombres de los pines no corresponden a los asignados para GPIO)</p>
+<p>SCU determina la funcion y modo electrido de los pines digitales. Por defecto está configurada la función 0 para todos los pines y se enecuentra habilitado el pull-up.</p>
+<p>Para los pines que soportan funciones analógicas y digitales, se pueden habilitar la función anaógica en los registros de selección de función de ADC en la SCU. También, el registro de delay del clock para los pines SDRAM EMC_CLK y los registros que seleccionan los pines de interrupción se encuentran en la SCU.</p>
+<p>El set de entradas y salidas analógicas para ADC y DAC como tambien la mayoria de los pines USB se encuentran separados y NO son controlables a traves del SCU.</p>
+<h2 id="estructura"><strong>Estructura:</strong></h2>
+<h3 id="nivel-chip-–-en-scu-18xx43xx.h"><strong>Nivel Chip – en scu-18xx:43xx.h:</strong></h3>
+<pre class=" language-c"><code class="prism  language-c"><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token function">Copyright</span><span class="token punctuation">(</span>C<span class="token punctuation">)</span> NXP Semiconductors<span class="token punctuation">,</span> <span class="token number">2012</span><span class="token operator">*</span><span class="token operator">*</span>
+
+  
+
+<span class="token comment">/**
+
+* @brief Array of pin definitions passed to Chip_SCU_SetPinMuxing() must be in this format
+
+*/</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">typedef</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">struct</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">{</span>
+
+uint8_t  pingrp<span class="token punctuation">;</span> <span class="token comment">/* Pin group */</span>
+
+uint8_t  pinnum<span class="token punctuation">;</span> <span class="token comment">/* Pin number */</span>
+
+uint16_t  modefunc<span class="token punctuation">;</span> <span class="token comment">/* Pin mode and function for SCU */</span>
+
+<span class="token punctuation">}</span> PINMUX_GRP_T<span class="token punctuation">;</span>
+
+  
+
+<span class="token comment">/**
+
+* @brief System Control Unit register block
+
+*/</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">typedef</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">struct</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">{</span>
+
+__IO  uint32_t  SFSP<span class="token punctuation">[</span><span class="token number">16</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">32</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+__I  uint32_t  RESERVED0<span class="token punctuation">[</span><span class="token number">256</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+__IO  uint32_t  SFSCLK<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">/*!&lt; Pin configuration register for pins CLK0-3 */</span>
+
+__I  uint32_t  RESERVED16<span class="token punctuation">[</span><span class="token number">28</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+__IO  uint32_t  SFSUSB<span class="token punctuation">;</span> <span class="token comment">/*!&lt; Pin configuration register for USB */</span>
+
+__IO  uint32_t  SFSI2C0<span class="token punctuation">;</span> <span class="token comment">/*!&lt; Pin configuration register for I2C0-bus pins */</span>
+
+__IO  uint32_t  ENAIO<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">/*!&lt; Analog function select registerS */</span>
+
+__I  uint32_t  RESERVED17<span class="token punctuation">[</span><span class="token number">27</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+__IO  uint32_t  EMCDELAYCLK<span class="token punctuation">;</span> <span class="token comment">/*!&lt; EMC clock delay register */</span>
+
+__I  uint32_t  RESERVED18<span class="token punctuation">[</span><span class="token number">63</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+__IO  uint32_t  PINTSEL<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">/*!&lt; Pin interrupt select register for pin int 0 to 3 index 0, 4 to 7 index 1. */</span>
+
+<span class="token punctuation">}</span> LPC_SCU_T<span class="token punctuation">;</span>
+</code></pre>
+<h3 id="nivel-sapi---en-sapi_peripherical_map.h"><strong>Nivel Sapi - en sapi_peripherical_map.h:</strong></h3>
+<pre class=" language-c"><code class="prism  language-c"><span class="token operator">*</span> This file is part sAPI library <span class="token keyword">for</span> microcontrollers<span class="token punctuation">.</span>
+
+  
+
+<span class="token comment">/*==================[typedef]================================================*/</span>
+
+  
+
+<span class="token comment">/* ----- Begin Pin Init  Structs NXP LPC4337 ----- */</span>
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">typedef</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">struct</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">{</span>
+
+int8_t  port<span class="token punctuation">;</span>
+
+int8_t  pin<span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span> pinInitLpc4337_t<span class="token punctuation">;</span>
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">typedef</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">struct</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">{</span>
+
+uint8_t  lpcScuPort<span class="token punctuation">;</span>
+
+uint8_t  lpcScuPin<span class="token punctuation">;</span>
+
+uint8_t  lpcScuFunc<span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span> lpc4337ScuPin_t<span class="token punctuation">;</span>
+
+  
+
+<span class="token comment">/* ------ End Pin Init  Structs NXP LPC4337 ------ */</span>
+
+</code></pre>
+<h3 id="detalle-de-registros"><strong>Detalle de Registros:</strong></h3>
+<p>Capitulo 17 de <a href="https://github.com/ciaa/firmware_v3/blob/master/documentation/CIAA_Boards/NXP_LPC4337/NXP_Info/UM10503.pdf">Manual del Usuario - UM10503 LPC43xx/LPC43Sxx ARM Cortex-M4/M0 multi-core microcontroller</a></p>
+<p><img src="https://lh3.googleusercontent.com/i_m3Z6C3ju9-Qb6k6rN6iC29X7JZI29plFbjzH5HReoJ5ZIqKp-DuAsmJGplhCPx3jm8BZyBAZ31bW_ZJXZ_DF0zO-J_sVPhF0SidSeCwxR5ahVjpmAhgCtopsS2I6pNMzXq4XupRK92yKDFUrJ-W-wBIXComR1PWVztD0BIsbYmAdDWZb9NN_8m3BNrqGvMhxOJ_1cRqD6cbwqVuPwktuq4rTyn8T7-T-DNKvZVgRSzPeACP1C0S2tdbuKbynGiavcCFiB1NNMFCb7Nx6YZ0pExOmldOOVpzNvzmZGAMlLHuxktFgub4IczSH3O2kZsF0hufv8pr_KFxsNq2TQa_j0MvR3SvV81vY8uPbB8UlpbJJjqiyS1HiRwkop_SdX4qqf6jSP_jajoe9fFQOtJjV0HKNe6pu1DCLjPBp_pYZ_DScqKwzWVQfhmLg2EDF9YNlD5MMXR6dSivRih8KVfAvnMl1NBC5ss1OYOKoMUxhlLwwIOJ9tbDJF8g8PLEJkbdTQXlmZTtUXpzHwBTnHI_UjJIUgl-Ag2xHfvIHK_FqSUA50a0qNQesScxIYCG6Gv1WKDAv7zeZzTD9O_jlv0rEq3pnLc8BvAz-i90H3Gojy6RadbdjKG8RtNjY-_4QibS_l3OM8mQB6L-YZGDNQ4mjHH2nT5Hgb7eEa-a5A4OqB5hQVvdqO7JXIqkGD1uJmWQPTu5n1BxS8ZiYOsQccyzio=w696-h663-no?authuser=1" alt="SCU Register Overview"><em>Table 191. Register overview: System Control Unit (SCU) (base address 0x4008 6000) - Page 412 – UM10503 LPC43xx/LPC43Sxx ARM Cortex-M4/M0 multi-core microcontroller</em></p>
+<p>Rangos Relativos para cada sección:</p>
+<p>Puertos P0-P9 y PA-PF</p>
+<p>0x000 - 0x498 -</p>
+<p>PA-PF (estos no estan en NXP LPC4337 JBD144)</p>
+<p>0x500 - 0x7AC</p>
+<p>CLKn pins</p>
+<p>0xC00 - 0xC0C</p>
+<p>USB1 USB1_DP/USB1_DM pins and I 2 C-bus open-drain pins</p>
+<p>0xC80 - 0xC84</p>
+<p>ADC pin select registers</p>
+<p>0xC88 - 0xC90</p>
+<p>EMC delay register</p>
+<p>0xD00</p>
+<p>SD/MMC delay register</p>
+<p>0xD80</p>
+<p>Pin interrupt select registers</p>
+<p>0xE00 - 0xE04</p>
+<h3 id="esquemáticos"><strong>Esquemáticos:</strong></h3>
+<p>Esquemático que muestra las conexiones de las salidas del micro en:</p>
+<ul>
+<li><a href="https://github.com/ciaa/firmware_v3/blob/master/documentation/CIAA_Boards/NXP_LPC4337/EDU-CIAA-NXP/EDU-CIAA-NXP%20Esquematico.pdf">EDU-CIAA-NXP Esquematico</a></li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/I35WI3JxxuEe61PN3ycPkBv3FTc_Ei8Bz7Bm9JiKEQQChTFVujV8VVJCoT5bCnRf0y3gi9OjKZl3en0G1ykXQZ4QD1zCoNraB80K6axkjE8fOkwzkq0hB8JBgVXVHr2oJwnQ6AiNzytcLCXMqGYLIkvH_kcIvJf_4ruUbxtVELHH2VXOcQ8Hd6Ul7DK3H-nHvdvkULwUOkW4ngaiKHN3YyDggytf64pwoxOhDtKFe8GeQlt-6GQUbe5ecs73JM6Wjk3SZ7iVzRoDYctN2ZtDuNzN7i_hDd9gSxAIfkTVbR8ECa33sW4nMreErjr0K_WGUE2AtSM7vdlhi98MUu_ibrySDGhfa_vOnD0jYRg7IgxULHmhr2cfOC2UlEM7Og7IFOCxEa96ULXBG4_yG3-CeejdeZ6s5uLeDkS5DyoP4GqqWVnDLrJ9CnusPpsbP51uWgVXW79HC4Aft2Ayo9od0jsg-oMRIS6c-u-enF93Vp0xh6f78458_OTcQNZmKD-BzqlsLGn7i4TYIb0VuBMP321i3EY-LC2NRZbnnRMupubU7Xk71K105srAxEwxyoNHndolDrly9Vr295ZNyI26ECT4OZ4Xq-_byBYWFTB3uqW2qsIhQCgUJXE0Tfh_VFcZNKCBn9p9NZwLnUyk3WkLmI8bgr61KMobWt803qo0IGB3IG6rTg4gimjJjXAnqKNmUWs1oyvwFuMqdeeHjmn37Ag=w312-h548-no?authuser=1" alt="EDU-CIAA-NXP Esquematico"></p>
+<p>Esquemáticos que asocian funciones y posiciones en placa EDU-CIAA:</p>
+<ul>
+<li><a href="https://github.com/ciaa/firmware_v3/blob/master/documentation/CIAA_Boards/NXP_LPC4337/EDU-CIAA-NXP/EDU-CIAA-NXP%20v1.1%20Board%20-%202019-01-03%20v5r0.pdf">EDU-CIAA-NXP v1.1 Board - 2019-01-03 v5r0</a></li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/u2TSFnFjtstcvRyafX0JDFkWeQTPHoMIcL4Wa0IhZG39h72ZaXrN_iq-8BiKrHOetqO4mjfBYCV2a3cp1UEyY-75H9xZcwlIs94llDOVLCv-sqfa5-DXPNUZKU_GqGE_S2ro6L_7TeLofqXCbuaf29R2uyV-7ELbOSypsSOaHK9rkYVQ7SyMTtp9IZteC8f3RnZMczqI6dW755RXJCo7w2Fx4rtP9nvqYhIgnUqnGAtU1Q3hY4UddGpOgGu-8iCJRwd2jXJk01byJGrjCOy7p8mYcg4oYRelRWadP37zuTE2JfqSeq9bwHgTIF8U6gD7nYdNXzZy6IvhbXfkSFuXRvEMEJ-JzUvSPDehJKoLJNZUb39SX2-QETVrbcztMHqYhUI_s47i_v1pkjgVdJQHEQkgpFFgMbSHKg2LqZBxzOlj-sNnA_6bt9M106uWIhDJ3k6ZcU6oO1z-QtTV2dSASlHRzFFKQHgGVgA4opSdke0_Fg32n3OY1Tx3J9AXE81-P1E6jYvkv3mHzjm0p_znYTlaDg3aJsng1CEWlhhbIP42OKWnRlSRAoYJY34BRb0SSTH79RQqluHjNWJj-TtmA7PJTRy6Ee6cnE0p9Iwb4YqrLjSnLPf3E2rDocg2lp4O1RmwgClREGMy-qpVbgu4Q3KFGpt5YDQF-fvEzwz_GA6AtllghsMrGETTtJyXNLxWEezwLKDnCapkk8Z1dEUbbwQ=w1170-h229-no?authuser=1" alt="Leyenda Pines"></p>
+<p><img src="https://lh3.googleusercontent.com/a6Zz4RAmktCd1wtjX0jOazxAHPTLou9IZkPK_38JOH8Y3bELrGY5qifKF37omZT7ucIdFwxpTuQ0_XqYHaWRnIgP2yEk4R0ABLJBcH6paZmY6ycLjhEaI7Y6-O68ENygez_dBsa4Z9_m38bc2prU1eEUmRuDb0oOjkj0iCArT2Gc2msjd5pUoAvXEo9wuykzkVamsEAfqlNEd4ZtiA0xoDQtMYfkusQWficygFhAfTzOEIfgSFLdV4d6b7OyKpzoQuiUpVNMxMXxg39EWSmq6yXeDJREEXtM6hC-wF05-igysMRqqFm2g37H-aXJzqpCZjxRewUk0T19EqB9RByNcuiYPN0GJAabgD3CEVE4ifKnKP64TnyhLI6wPpdlMLCRoHmgPeSfCJ4jyfm-ghUJPKf0NEVcEaqx-cF2pdQKTpiCavlpkRNjFLOg_NW8iwFil8j2RrJOz15SQRLIIEekglQsJ1-Y0vDpgt7wW9LNJGI8Rp9NFfQd91nZy-H31crHQrtUgAVFUMLfyUJtA6YetLmo6kBrpPpmNfkerqUe-a7gv2TF8syfZWUz1-JU5HGtqhfhisx8b9A_rRCq0swgOxtymRSqhOh2T-t2DZezIByX7vM2y3BAZ8_EE3kLvX40-0jMmCGT0WK_aIxMGC6nFEgNkH72XSzNfGUeYB3-fZ87v9-v2ZnosuWUrp678UR6cSLdtpOjP6EGNPxXW3JXBBA=w1268-h663-no?authuser=1" alt="EDU-CIAA Pines utilizados del NXP LPC4337 (1 a 72)"></p>
+<p><img src="https://lh3.googleusercontent.com/J0s-5Zek_ds4nGjNOEuVPwEoVa3ZHtYkMn4zpifamyfuMMhI5M84eewN--qe260DFPZMudL_D-Igx37-4TCYqhPZjkHxeBvMl2itvFb8e7wfCYpIancV3yuDnDj-BAokT4kXtHTABy1puhnzeq2hMIStc_cG99U98Dp2ND9m7f-v2V8fe7ekF1D23vbUtwgNJCNQuKoH9CgbTWl4uT41jK4ntOXoLKvudYJcZGOjm8evwTOnJJ8fR3S26bfsXpmJ47XYk2yHPPk3pzxBJ0yEKk81hOFD6qSJT433AwhavYK31V6GYlEzXWHTSJoZ2anXJg3_26CB9P2O3gmemD8n852PzwL3alJy-JbHp_jRZ5eZD-XEPWI5zBmK9i7o2unozNii7H4MMVNFg0yv5fjpZHAif49h66wFlQO4S1vEgiyVE8kP673viMqrZmU15VfVxSjEcgbiIbudyp41mJyriGp-z0zDTw8CJ-uzxbCi6flS_Jm51AAm1f38zhmpwR7sKZG0rxpqeEdGqnKQigmkIWwl1lskjwpGcsW0SYuX5rFRRnHjURt6tlMkkUa3tZVHt9Ncqiyt_kSPJ7g7VYOthdQX3RzltK49FTy1Jzq_dqRGlZ1hFpj4AgN68_iBFV03Fo7vAfzt1ivOqw8psKsDnhbwQZvo7EsQix2c8g1w0uwAyAtlRCi3etSI8XEYQOwhNBtXGBo4evoHMa8Bx3cjaYg=w1237-h663-no?authuser=1" alt="EDU-CIAA Pines utilizados del NXP LPC4337 (73 a 144)"></p>
+<h3 id="primitivas-y-macros"><strong>Primitivas</strong> <strong>y Macros</strong>:</h3>
+<p>En <strong>scu-18xx:43xx.h</strong> se definen todas las Macros de SCU y las primitivas.</p>
+<p><strong>Macros</strong>:</p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token operator">*</span> <span class="token function">Copyright</span><span class="token punctuation">(</span>C<span class="token punctuation">)</span> NXP Semiconductors<span class="token punctuation">,</span> <span class="token number">2012</span>
+
+  
+
+<span class="token comment">/**
+
+* SCU function and mode selection definitions
+
+* See the User Manual for specific modes and functions supoprted by the
+
+* various LPC18xx/43xx devices. Functionality can vary per device.
+
+*/</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_PULLUP</span> <span class="token punctuation">(</span><span class="token number">0x0</span> <span class="token operator">&lt;&lt;</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Enable pull-up resistor at pad */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_REPEATER</span> <span class="token punctuation">(</span><span class="token number">0x1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Enable pull-down and pull-up resistor at resistor at pad (repeater mode) */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_INACT</span> <span class="token punctuation">(</span><span class="token number">0x2</span> <span class="token operator">&lt;&lt;</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Disable pull-down and pull-up resistor at resistor at pad */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_PULLDOWN</span> <span class="token punctuation">(</span><span class="token number">0x3</span> <span class="token operator">&lt;&lt;</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Enable pull-down resistor at pad */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_HIGHSPEEDSLEW_EN</span> <span class="token punctuation">(</span><span class="token number">0x1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">5</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Enable high-speed slew */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_INBUFF_EN</span> <span class="token punctuation">(</span><span class="token number">0x1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">6</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Enable Input buffer */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_ZIF_DIS</span> <span class="token punctuation">(</span><span class="token number">0x1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">7</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Disable input glitch filter */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_4MA_DRIVESTR</span> <span class="token punctuation">(</span><span class="token number">0x0</span> <span class="token operator">&lt;&lt;</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Normal drive: 4mA drive strength */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_8MA_DRIVESTR</span> <span class="token punctuation">(</span><span class="token number">0x1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Medium drive: 8mA drive strength */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_14MA_DRIVESTR</span> <span class="token punctuation">(</span><span class="token number">0x2</span> <span class="token operator">&lt;&lt;</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; High drive: 14mA drive strength */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_MODE_20MA_DRIVESTR</span> <span class="token punctuation">(</span><span class="token number">0x3</span> <span class="token operator">&lt;&lt;</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token comment">/*!&lt; Ultra high- drive: 20mA drive strength */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC0 <span class="token number">0x0</span> <span class="token comment">/*!&lt; Selects pin function 0 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC1 <span class="token number">0x1</span> <span class="token comment">/*!&lt; Selects pin function 1 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC2 <span class="token number">0x2</span> <span class="token comment">/*!&lt; Selects pin function 2 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC3 <span class="token number">0x3</span> <span class="token comment">/*!&lt; Selects pin function 3 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC4 <span class="token number">0x4</span> <span class="token comment">/*!&lt; Selects pin function 4 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC5 <span class="token number">0x5</span> <span class="token comment">/*!&lt; Selects pin function 5 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC6 <span class="token number">0x6</span> <span class="token comment">/*!&lt; Selects pin function 6 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> SCU_MODE_FUNC7 <span class="token number">0x7</span> <span class="token comment">/*!&lt; Selects pin function 7 */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> <span class="token function">SCU_PINIO_FAST</span> <span class="token punctuation">(</span>SCU_MODE_INACT <span class="token operator">|</span> SCU_MODE_HIGHSPEEDSLEW_EN <span class="token operator">|</span> SCU_MODE_INBUFF_EN <span class="token operator">|</span> SCU_MODE_ZIF_DIS<span class="token punctuation">)</span>
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> PORT_OFFSET <span class="token number">0x80</span> <span class="token comment">/** Port offset definition */</span>
+
+<span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> PIN_OFFSET <span class="token number">0x04</span> <span class="token comment">/** Pin offset definition */</span>
+</code></pre>
+<p>En <strong>chip_lpc43xx.h:</strong></p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token operator">*</span><span class="token operator">*</span>#define<span class="token operator">*</span><span class="token operator">*</span> LPC_SCU_BASE <span class="token number">0x40086000</span>
+
+
+<span class="token operator">*</span><span class="token operator">*</span>Primitivas<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">:</span>
+
+En <span class="token operator">*</span><span class="token operator">*</span>scu<span class="token operator">-</span>18xx<span class="token punctuation">:</span>43xx<span class="token punctuation">.</span>h<span class="token operator">*</span><span class="token operator">*</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_PinMuxSet<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span>uint8_t port<span class="token punctuation">,</span> uint8_t pin<span class="token punctuation">,</span> uint16_t modefunc<span class="token punctuation">)</span> <span class="token operator">--</span><span class="token operator">&gt;</span> para setear el modo de funcionamiento de un determinado pin
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_ClockPinMuxSet<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span>uint8_t clknum<span class="token punctuation">,</span> uint16_t modefunc<span class="token punctuation">)</span>
+
+<span class="token operator">--</span><span class="token operator">&gt;</span> configura los las funciones de los pines de clock<span class="token punctuation">.</span>
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_GPIOIntPinSel<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span>uint8_t PortSel<span class="token punctuation">,</span> uint8_t PortNum<span class="token punctuation">,</span> uint8_t PinNum<span class="token punctuation">)</span>
+
+→ setea los pines GPIO que haran interrupciones
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_I2C0PinConfig<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span>uint32_t I2C0Mode<span class="token punctuation">)</span>
+
+<span class="token operator">--</span><span class="token operator">&gt;</span>configura el pin de I2C
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_ADC_Channel_Config<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span>uint32_t ADC_ID<span class="token punctuation">,</span> uint8_t channel<span class="token punctuation">)</span>
+
+<span class="token operator">--</span><span class="token operator">&gt;</span> configura el canal de ADC que se pase como parametro<span class="token punctuation">.</span>
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_DAC_Analog_Config<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">)</span>
+
+<span class="token operator">-&gt;</span> habilita la funcion del DAC en el pin P4_4
+
+  
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span>  <span class="token operator">*</span><span class="token operator">*</span>Chip_SCU_SetPinMuxing<span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token operator">*</span><span class="token keyword">const</span><span class="token operator">*</span><span class="token operator">*</span>  PINMUX_GRP_T <span class="token operator">*</span>pinArray<span class="token punctuation">,</span> uint32_t arrayLength<span class="token punctuation">)</span>
+
+<span class="token operator">--</span><span class="token operator">&gt;</span> se setea el modo de funcionamiento de un conjunto de pines<span class="token punctuation">.</span> llama a <span class="token function">Chip_SCU_PinMuxSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> para cada elemento del array de entrada<span class="token punctuation">.</span>
+</code></pre>
+</div>
+</body>
+
+</html>
