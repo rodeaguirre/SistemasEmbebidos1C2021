@@ -107,15 +107,15 @@ Como es necesario saber el numero de puerto y pin para poder gestionar el GPIO, 
 
 La primera estructura es un **enum** gpioMap\_t, que se encuentra en el archivo sapi\_peripheral\_map.h. enum. Lo que hace es asignarle a cada etiqueta de la EDU-CIAA un valor de posición. La segunda estructura es un vector de pinInitGpioLpc4337\_t, llamado gpioPinsInit, que se encuentra en el archivo sapi\_gpio.c. Lo que hace es obtener un pinInitGpioLpc4337\_t, a partir de la posición asignada a cada etiquta. Por último, el pinInitGpioLpc4337\_t contiene 5 int8\_t, correspondientes al puerto físico, pin físico, número de función asignada a gpio, puerto gpio y pin gpio. En conjunto estas 3 estructuras lo que hacen en conjunto es apartir de una estiqueta poder manejar la SCU para poner la función gpio y poder manejar la gpio. En las figuras 2.2 a 2.4 se puede observar la estructura de pinInitGpioLpc4337\_t.
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.002.jepg)
+![Figura GPIO 2.2](/GPIO/pinInitGpioLpc4337_t.jpg)
 
 Figura 2.2: Estructura de pinInitGpioLpc4337\_t
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.003.jepg)
+![Figura GPIO 2.3](/GPIO/gpioInitLpc4337_t.jpg)
 
 Figura 2.3: estructura de gpioInitLpc4337\_t
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.004.jepg)
+![Figura GPIO 2.4](/GPIO/pinInitLpc4337_t.jpg)
 
 Figura 2.4: estructura de pinInitLpc4337\_t
 
@@ -123,7 +123,7 @@ INTERRUPCIONES POR PIN
 
 La estructura que representa los registros de la SCU es LPC\_SCU\_T que .se muestra en la figura 2.5, donde lo importante para las interrupciones es el atributo PINTSEL.
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.005.jepg)
+![Figura GPIO 2.5](/GPIO/LPC_SCU_T.jpg)
 
 Figura 2.5: estructura que representa los registros en SCU.
 
@@ -131,7 +131,7 @@ Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por pin es LPC\_PIN\_INT\_T, que se muestra en la figura 2.6.
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.006.jepg)
+![Figura GPIO 2.6](/GPIO/LPC_PIN_INT_T.jpg)
 
 Figura 2.6: estructura que representa los registros de interrupción por pin.
 
@@ -147,9 +147,9 @@ INTERRUPCIONES POR GRUPO
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por grupo es LPC\_GPIOGROUPINT\_T, que se muestra en la figura 2.7.
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.007.jepg)
+![Figura GPIO 2.7](/GPIO/LPC_GPIOGROUPINT_T.jpg)
 
-Figura 2.6: estructura que representa los registros de interrupción por grupo.
+Figura 2.7: estructura que representa los registros de interrupción por grupo.
 
 En el caso del grupo 0, las etiquetas
 
@@ -301,7 +301,7 @@ Archivo: pinint\_18xx\_43xx.h
 
 1. Diagrama
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.008.jepg)
+![Figura GPIO 2.7](/GPIO/GPIO\ resumen.jpg)
 
 ---
 # Index
