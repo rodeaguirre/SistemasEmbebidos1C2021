@@ -44,21 +44,21 @@ Tabla 1.1:
 | Registro | Bits | Función |
 | --- | --- | --- |
 | PINTSEL0 | 4:0 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT0. |
-|  || 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT0. |
-|  || 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT1. |
-|  || 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT1. |
-|  || 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT2. |
-|  || 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT2. |
-|  || 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT3. |
-|  || 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT3. |
+|  | 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT0. |
+|  | 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT1. |
+|  | 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT1. |
+|  | 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT2. |
+|  | 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT2. |
+|  | 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT3. |
+|  | 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT3. |
 | PINTSEL1 | 4:0 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT4. |
-|  || 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT4. |
-|  || 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT5. |
-|  || 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT5. |
-|  || 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT6. |
-|  || 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT6. |
-|  || 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT7. |
-|  || 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT7. |
+|  | 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT4. |
+|  | 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT5. |
+|  | 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT5. |
+|  | 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT6. |
+|  | 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT6. |
+|  | 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT7. |
+|  | 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT7. |
 
 Los registros asociados al GPIO lo que haces es definir las características de las interrupciones. Estos registros son registros de 32 bits en donde el bit n de cada registro está asociada a una característica de la interrupción PIN\_INTn. La dirección base de estos registros es 0x4008 7000.
 
