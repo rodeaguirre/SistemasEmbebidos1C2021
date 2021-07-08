@@ -95,7 +95,7 @@ IO
 
 La estructura que marche los registros de GPIO con su número de puerto y pin es LPC\_GPIO\_T. que se muestra en la figura 2.1.
 
-![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.001.jepg)
+![Figura GPIO 2.1](/GPIO/LPC_GPIO_T.jpg)
 
 Figura 2.1: Estructura que representa los registros GPIO.
 
