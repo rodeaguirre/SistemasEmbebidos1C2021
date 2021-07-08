@@ -127,7 +127,7 @@ La estructura que representa los registros de la SCU es``` LPC_SCU_T``` que .se 
 
 Figura 2.5: estructura que representa los registros en SCU.
 
-Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea ``c #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE)``  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
+Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que posee el valor 0x40086000 que es la dirección base de dichos registros. También existe la linea `` #define LPC_SCU ((LPC_SCU_T*) LPC_SCU_BASE) ``  que genera un puntero a``` LPC_SCU_T``` con el valor de la dirección de inicio.
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por pin es LPC\_PIN\_INT\_T, que se muestra en la figura 2.6.
 
@@ -183,7 +183,7 @@ Función: inicializa el bloque GPIO. pGPIO debe contener la dirección de inicio
 Archivo: gpio\_18xx\_43xx.h
 
 ```c
-void Chip\_GPIO\_DeInit(LPC_GPIO_T *pGPIO)
+void Chip_GPIO_DeInit(LPC_GPIO_T *pGPIO)
 ```
 Función: des inicializa el bloque GPIO.
 
@@ -196,13 +196,13 @@ Función: En base a los bits que están en 1 en bitvalue pone los pines como ent
 Archivo: gpio\_18xx\_43xx.h
 
 ```c
-STATIC INLINE void Chip_GPIO_SetPinState(LPC_GPIO_T *pGPIO, uint8\_t port, uint8_t pin,bool setting)
+STATIC INLINE void Chip_GPIO_SetPinState(LPC_GPIO_T *pGPIO, uint8_t port, uint8_t pin,bool setting)
 ```
 Función: Escribe el estado del pin modificando el grupo B.
 
 Archivo: gpio\_18xx\_43xx.h
 ```c
-STATIC INLINE bool Chip_GPIO_ReadPortBit(LPC_GPIO\_T *pGPIO, uint32_t port, uint8_t pin)
+STATIC INLINE bool Chip_GPIO_ReadPortBit(LPC_GPIO_T *pGPIO, uint32_t port, uint8_t pin)
 ```
 Función: Lee el estado del pin a partir del grupo B de registros.
 
@@ -226,32 +226,32 @@ Archivo: sapi\_gpio.c
 
 De uso común:
 ```c
-bool_t gpioInit ( gpioMap_t pin, gpioInit_t config )
+bool_t gpioInit( gpioMap_t pin, gpioInit_t config )
 ```
 Función: Si se envía &quot;ENABLE&quot; en config, activa la función de gpio del microcontrolador. En otro caso establece la función gpio del pin seleccionado, en base a config lo puede poner como salida o como entrada. Si es entrada se puede poner con o sin resistencia de pullup y/o pulldown. Devuelve false si si pasan VCC o GND como pin o si la configuración no es correcta.
 
 Archivo: sapi\_gpio.c
 ```c
-bool_t **gpioWrite** ( gpioMap_t pin, bool_t value )
+bool_t gpioWrite( gpioMap_t pin, bool_t value )
 ```
 Función: Escribe el valor de un pin. Se debe haber puesto como salida con **gpioInit** antes de usarla.
 
 Archivo: sapi\_gpio.c
 ```c
-bool_t **gpioToggle** ( gpioMap_t pin )
+bool_t gpioToggle( gpioMap_t pin )
 ```
 Función: Alterna el valor del pin si está como salida. Se debe haber puesto como salida con **gpioInit** antes de usarla.
 
 Archivo: sapi\_gpio.c
 ```c
-bool_t **gpioRead** ( gpioMap_t pin )
+bool_t gpioRead ( gpioMap_t pin )
 ```
 Función: Lee el valor del pin. Se debe haber inicializado con **gpioInit** antes de usarla.
 
 Archivo: sapi\_gpio.c
 
 INTERRUPCIONES POR PIN: Nivel Chip (NXP)
-```
+```c
 STATIC INLINE void Chip_SCU_GPIOIntPinSel(uint8_t PortSel, uint8_t PortNum, uint8_t PinNum)
 ```
 Función: Asocia una interrupción por pin a un pin de la GPIO.
@@ -276,7 +276,7 @@ Función: setea el trigger por flanco.
 
 Archivo: pinint\_18xx\_43xx.h
 ```c
-STATIC INLINE void Chip_PININT_SetPinModeLevel**(LPC_PIN_INT_T *pPININT, uint32_t pins)
+STATIC INLINE void Chip_PININT_SetPinModeLevel(LPC_PIN_INT_T *pPININT, uint32_t pins)
 ```
 Función: setea el trigger por nivel.
 
@@ -294,7 +294,7 @@ Función: deshabilita interrupción por flanco ascendente o por nivel.
 
 Archivo: pinint\_18xx\_43xx.h
 ```c
-STATIC INLINE void Chip_PININT_EnableIntLow**(LPC_PIN_INT_T *pPININT, uint32_t pins)
+STATIC INLINE void Chip_PININT_EnableIntLow(LPC_PIN_INT_T *pPININT, uint32_t pins)
 ```
 Función: habilita interrupción por flanco descendente o pone el nivel en LOW para interrupción por nivel.
 
@@ -306,7 +306,7 @@ Función: deshabilita interrupción por flanco descendente o pone el nivel en HI
 
 Archivo: pinint\_18xx\_43xx.h
 ```c
-STATIC INLINE uint32_t Chip\_PININT\_GetIntStatus (LPC\_PIN_INT_T *pPININT)
+STATIC INLINE uint32_t Chip_PININT_GetIntStatus(LPC_PIN_INT_T *pPININT)
 ```
 Función: obtiene el estado de la interrupción.
 
