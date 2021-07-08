@@ -44,21 +44,21 @@ Tabla 1.1:
 | Registro | Bits | Función |
 | --- | --- | --- |
 | PINTSEL0 | 4:0 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT0. |
-| 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT0. |
-| 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT1. |
-| 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT1. |
-| 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT2. |
-| 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT2. |
-| 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT3. |
-| 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT3. |
+|  || 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT0. |
+|  || 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT1. |
+|  || 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT1. |
+|  || 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT2. |
+|  || 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT2. |
+|  || 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT3. |
+|  || 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT3. |
 | PINTSEL1 | 4:0 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT4. |
-| 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT4. |
-| 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT5. |
-| 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT5. |
-| 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT6. |
-| 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT6. |
-| 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT7. |
-| 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT7. |
+|  || 7:5 | Selecciona el número de port de GPIO para la interrupción PIN\_INT4. |
+|  || 8:12 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT5. |
+|  || 13:15 | Selecciona el número de port de GPIO para la interrupción PIN\_INT5. |
+|  || 16:20 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT6. |
+|  || 21:23 | Selecciona el número de port de GPIO para la interrupción PIN\_INT6. |
+|  || 24:28 | Selecciona el número de pin de GPIO para la interrupción PIN\_INT7. |
+|  || 29:31 | Selecciona el número de port de GPIO para la interrupción PIN\_INT7. |
 
 Los registros asociados al GPIO lo que haces es definir las características de las interrupciones. Estos registros son registros de 32 bits en donde el bit n de cada registro está asociada a una característica de la interrupción PIN\_INTn. La dirección base de estos registros es 0x4008 7000.
 
@@ -95,7 +95,7 @@ IO
 
 La estructura que marche los registros de GPIO con su número de puerto y pin es LPC\_GPIO\_T. que se muestra en la figura 2.1.
 
-![](RackMultipart20210708-4-1jrsw6h_html_4a3f5e22a2010066.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.001.jepg)
 
 Figura 2.1: Estructura que representa los registros GPIO.
 
@@ -107,15 +107,15 @@ Como es necesario saber el numero de puerto y pin para poder gestionar el GPIO, 
 
 La primera estructura es un **enum** gpioMap\_t, que se encuentra en el archivo sapi\_peripheral\_map.h. enum. Lo que hace es asignarle a cada etiqueta de la EDU-CIAA un valor de posición. La segunda estructura es un vector de pinInitGpioLpc4337\_t, llamado gpioPinsInit, que se encuentra en el archivo sapi\_gpio.c. Lo que hace es obtener un pinInitGpioLpc4337\_t, a partir de la posición asignada a cada etiquta. Por último, el pinInitGpioLpc4337\_t contiene 5 int8\_t, correspondientes al puerto físico, pin físico, número de función asignada a gpio, puerto gpio y pin gpio. En conjunto estas 3 estructuras lo que hacen en conjunto es apartir de una estiqueta poder manejar la SCU para poner la función gpio y poder manejar la gpio. En las figuras 2.2 a 2.4 se puede observar la estructura de pinInitGpioLpc4337\_t.
 
-![](RackMultipart20210708-4-1jrsw6h_html_ca7c98f7dd0d05e6.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.002.jepg)
 
 Figura 2.2: Estructura de pinInitGpioLpc4337\_t
 
-![](RackMultipart20210708-4-1jrsw6h_html_f199a451962613f9.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.003.jepg)
 
 Figura 2.3: estructura de gpioInitLpc4337\_t
 
-![](RackMultipart20210708-4-1jrsw6h_html_726e912eef0635e2.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.004.jepg)
 
 Figura 2.4: estructura de pinInitLpc4337\_t
 
@@ -123,7 +123,7 @@ INTERRUPCIONES POR PIN
 
 La estructura que representa los registros de la SCU es LPC\_SCU\_T que .se muestra en la figura 2.5, donde lo importante para las interrupciones es el atributo PINTSEL.
 
-![](RackMultipart20210708-4-1jrsw6h_html_4d4fbbcbf825de44.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.005.jepg)
 
 Figura 2.5: estructura que representa los registros en SCU.
 
@@ -131,7 +131,7 @@ Para poder acceder a estos registros se encuentra la etiqueta LPC\_SCU\_BASE que
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por pin es LPC\_PIN\_INT\_T, que se muestra en la figura 2.6.
 
-![](RackMultipart20210708-4-1jrsw6h_html_6a3318e7194f58d8.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.006.jepg)
 
 Figura 2.6: estructura que representa los registros de interrupción por pin.
 
@@ -147,7 +147,7 @@ INTERRUPCIONES POR GRUPO
 
 La estructura que representa los registros de GPIO para el manejo de interrupción por grupo es LPC\_GPIOGROUPINT\_T, que se muestra en la figura 2.7.
 
-![](RackMultipart20210708-4-1jrsw6h_html_f6129eef6ee1b77c.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.007.jepg)
 
 Figura 2.6: estructura que representa los registros de interrupción por grupo.
 
@@ -301,7 +301,7 @@ Archivo: pinint\_18xx\_43xx.h
 
 1. Diagrama
 
-![](RackMultipart20210708-4-1jrsw6h_html_d6d5e91fa8d0a219.jpg)
+![](Aspose.Words.073e04af-d621-4b97-ac9c-d0f652b037b9.008.jepg)
 
 ---
 # Index
