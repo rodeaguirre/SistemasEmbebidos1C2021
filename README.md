@@ -89,7 +89,7 @@ Tabla 1.3:
 | PORT\_POLn | 0x20 +n\*0x4 | Bit m: 0 el pin m del gpio port n se activa en LOW, 1 se activa en HIGH. |
 | PORT\_ENAn | 0x40 +n\*0x4 | Bit m: 0 el pin m del gpio port n no contribuye a la interrupción, 1el pin contribuye a la interrupción. |
 
-1. Estructura de datos que &quot;matchean&quot; el GPIO
+2. Estructura de datos que &quot;matchean&quot; el GPIO
 
 IO
 
@@ -165,7 +165,7 @@ En el caso del grupo 1 está la etiqueta
 
 Que marca el inicio de los registros de este grupo.
 
-1. Primitivas
+3. Primitivas
 
 IO: Nivel Chip (NXP)
 
@@ -299,9 +299,9 @@ STATIC INLINE **void**** Chip\_GPIOGP\_EnableGroupPins**(LPC\_GPIOGROUPINT\_T \*
 
 Archivo: pinint\_18xx\_43xx.h
 
-1. Diagrama
+4. Diagrama
 
-![Figura GPIO 4.1](/GPIO/GPIO resumen.jpg)
+![Figura GPIO 4.1](/GPIO/"GPIO resumen.jpg")
 
 ---
 # Index
