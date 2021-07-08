@@ -168,8 +168,10 @@ Que marca el inicio de los registros de este grupo.
 3. Primitivas
 
 IO: Nivel Chip (NXP)
-
-**void**** Chip\_GPIO\_Init**(LPC\_GPIO\_T \*pGPIO): inicializa el bloque GPIO. pGPIO debe contener la dirección de inicio de los registros de gpio.
+```c
+void Chip_GPIO_Init(LPC_GPIO_T *pGPIO)
+```
+Función inicializa el bloque GPIO. pGPIO debe contener la dirección de inicio de los registros de gpio.
 
 Archivo: gpio\_18xx\_43xx.h
 
