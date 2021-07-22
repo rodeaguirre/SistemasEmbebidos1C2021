@@ -231,6 +231,192 @@ void uartInterrupt( uartMap_t uart, bool_t enable )
 }
 ```
 
+### *Ejercicio 6*
+
+## **Objetivo:**
+
+Crear un código que permita escribir el DAC en función de lo recibido por la UART y luego leer el ADC y trasmitir el valor leído nuevamente por la UART. 
+
+## **Funcionamiento**
+
+Se leerá continuamente la UART2 y con los caractéres de 0 a 9 se seleccionará que nivel de tensión queremos proporcionarle al DAC. Considerando que el máximo es 3.3V, separamos en niveles que distan de 0.37V cada uno siendo 0 el nivel  correspondiente a 0V y 9 el nivel lo más cercano a 3.3V. 
+Luego, el CH1 del ADC estará loopeado al DAC a través de una resistencia de 10KOhm y el micro deberá enviar por la UART2 el valor leido por el ADC. 
+
+## **Implementación**
+
+Para implementar este programa se partió del ejemplo incluido en el firmware_v3  en */firmware_v3/examples/c/sapi/adc_dac*. 
+
+De aquí se mantuvo el delay1, que se encarga de ejecutar un bloque cada un determinado tiempo (500ms) pero sin bloquear el programa y también la utilización de la función itoa() para imprimir los valores leídos del ADC por la UART en ASCII. 
+
+Luego, fue necesario agregar un bloque de lectura de la UART2. En este caso, se implementó por polling y el valor leído tendrá efecto solamente si está dentro del rango de los número 0-9 (equivalente a 48-57 en ASCII) . Para estos casos, se seteará el DAC con el valor correspondiente al nivel recibido por la UART. 
+
+Además, el programa imprime por la UART cada 500ms el valor leído del CH1 del ADC e informa, en caso de recibir un cambio de nivel válido, a qué nivel se configurará el DAC. 
+
+  
+A continuación, se muestra la implementación del programa:
+
+```c
+
+/* Copyright 2016, Eric Pernia.
+ * All rights reserved.
+ * This file is part sAPI library for microcontrollers.
+
+ * Date: 22/07/2021
+ * Modified by: Martin Anus
+ */
+
+/*==================[inclusions]=============================================*/
+
+#include "sapi.h"        // <= sAPI header
+
+/*==================[macros and definitions]=================================*/
+
+#define DAC_STEP 113  // paso del DAC para 9 niveles: 1024 (max 16bits / 9 niveles)
+#define ZERO_ASCII 48 // valor decimal del 0 en ASCII
+#define NINE_ASCII 57 // valor decimal del 9 en ASCII
+
+/*==================[internal data declaration]==============================*/
+
+/*==================[internal functions declaration]=========================*/
+
+/*==================[internal data definition]===============================*/
+
+/*==================[external data definition]===============================*/
+
+/*==================[internal functions definition]==========================*/
+
+/*==================[external functions definition]==========================*/
+
+
+/**
+ * C++ version 0.4 char* style "itoa":
+ * Written by Lukás Chmela
+ * Released under GPLv3.
+
+ */
+char* itoa(int value, char* result, int base) {
+   // check that the base if valid
+   if (base < 2 || base > 36) { *result = '\0'; return result; }
+
+   char* ptr = result, *ptr1 = result, tmp_char;
+   int tmp_value;
+
+   do {
+      tmp_value = value;
+      value /= base;
+      *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+   } while ( value );
+
+   // Apply negative sign
+   if (tmp_value < 0) *ptr++ = '-';
+   *ptr-- = '\0';
+   while(ptr1 < ptr) {
+      tmp_char = *ptr;
+      *ptr--= *ptr1;
+      *ptr1++ = tmp_char;
+   }
+   return result;
+}
+
+
+/* FUNCION PRINCIPAL, PUNTO DE ENTRADA AL PROGRAMA LUEGO DE RESET. */
+int main(void){
+
+   /* ------------- INICIALIZACIONES ------------- */
+
+   /* Inicializar la placa */
+   boardConfig();
+
+   /* Inicializar UART_USB a 115200 baudios */
+   uartConfig( UART_USB, 115200 );
+
+   /* Inicializar AnalogIO */
+   /* Posibles configuraciones:
+    *    ADC_ENABLE,  ADC_DISABLE,
+    *    ADC_ENABLE,  ADC_DISABLE,
+    */
+   adcConfig( ADC_ENABLE ); /* ADC */
+   dacConfig( DAC_ENABLE ); /* DAC */
+
+
+
+   /* Buffer */
+   static char uartBuff[10];
+
+   /* Variable para almacenar el valor leido del ADC CH1 */
+   uint16_t muestra = 0;
+   uint16_t dacValue = 0x0000;
+
+   uint8_t data;
+
+
+
+   /* Variables de delays no bloqueantes */
+   delay_t delay1;
+
+
+   /* Inicializar Retardo no bloqueante con tiempo en ms */
+   delayConfig( &delay1, 500 );
+
+
+
+
+   /* ------------- REPETIR POR SIEMPRE ------------- */
+   while(1) {
+	   if(uartReadByte(UART_USB, &data))
+		   if(data >= ZERO_ASCII && data <= NINE_ASCII){
+			   uartWriteString( UART_USB, "Se cambiara el DAC al nivel: " );
+		       uartWriteByte( UART_USB, data);
+		       uartWriteString( UART_USB, "\r\n" );
+
+			   dacValue = (data - ZERO_ASCII) * DAC_STEP;
+			   dacWrite( DAC, dacValue);
+		   }
+
+
+      /* delayRead retorna TRUE cuando se cumple el tiempo de retardo */
+      if ( delayRead( &delay1 ) ){
+
+
+         /* Leo la Entrada Analogica AI0 - ADC0 CH1 */
+         muestra = adcRead( CH1 );
+
+         /* Envío la primer parte del mnesaje a la Uart */
+         uartWriteString( UART_USB, "ADC CH1 value: " );
+
+         /* Conversión de muestra entera a ascii con base decimal */
+         itoa( muestra, uartBuff, 10 ); /* 10 significa decimal */
+
+         /* Enviar muestra y Enter */
+         uartWriteString( UART_USB, uartBuff );
+         uartWriteString( UART_USB, ";\r\n" );
+
+      }
+
+
+
+   }
+
+   /* NO DEBE LLEGAR NUNCA AQUI, debido a que a este programa no es llamado
+      por ningun S.O. */
+   return 0 ;
+}
+
+/*==================[end of file]============================================*/
+
+
+```	
+
+
+
+
+
+
+
+
+
+
+
 ## Ejercicio 7
 
 #### Enunciado del ejercicio
