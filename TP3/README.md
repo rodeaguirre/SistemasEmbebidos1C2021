@@ -245,13 +245,17 @@ c. Testear que cuando esté conectado el resistor de loopback, se puedan prender
 
 **PULSADOR -> LED -> UART3.TX -> RESISTOR -> UART3.RX -> LED**
 
+#### Diseño funcional
+
+Se utiliza una resistencia de 5k6 ohms entre el pin 88 y 87. 
+
+Cada tecla de la placa cambia el estado (encendido - apagado) del LED que tiene en frente. A su vez, se envía el mismo caracter por el UART2 y UART3. El UART3 recibe el caracter, y cambia el estado del led que se encuentra a la derecha del anterior. 
+
 #### Programa original
 
 Para poder afrotar el presente ejercicio, me basé en el ejercicio 3, este aporta la estructura general del nuevo código.
 
-#### Modificaciones realizadas
-
-Incorporé la habilitación del transmisor UART 3 tomada del archivo tx_rx_interrupt_bridge.c ubicada en el directorio firmware_v3/examples/c/sapi/uart/tx_rx_interrupt_bridge/src. 
+Se incorporó la habilitación del transmisor UART 3 tomada del archivo tx_rx_interrupt_bridge.c ubicada en el directorio firmware_v3/examples/c/sapi/uart/tx_rx_interrupt_bridge/src. 
 
 ```c
    uartCallbackSet(UART_USB, UART_TRANSMITER_FREE, uartUsbSendCallback, NULL);
