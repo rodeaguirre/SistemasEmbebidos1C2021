@@ -231,7 +231,7 @@ void uartInterrupt( uartMap_t uart, bool_t enable )
 }
 ```
 
-### *Ejercicio 6*
+# *Ejercicio 6*
 
 ## **Objetivo:**
 
