@@ -738,6 +738,7 @@ const ledXState_t caracteresLed[][2] = {
 
 bool rxUART2 = false;
 bool rxUART3 = false;
+ledXState_t c;
 /*==================[external data definition]===============================*/
 
 /*==================[internal functions definition]==========================*/
@@ -746,11 +747,13 @@ bool rxUART3 = false;
 void redireccionarUart( void *noUsado )
 {
 	bool rxUART2 = true;
+	c =(ledXState_t) uartRxRead( UART_USB );
 }
 
 void switchLeds( void *noUsado )
 {
 	bool rxUART3 = true;
+	c =(ledXState_t) uartRxRead( UART_232 );
 }
 
 
@@ -786,7 +789,7 @@ int main(void){
    }
 
    bool valor;
-   ledXState_t c;
+   
 
    // ------------- REPETIR POR SIEMPRE -------------
    while(1)
@@ -808,7 +811,7 @@ int main(void){
 	   if(rxUART2)
 	   {
 		   rxUART2 = false;
-		   c =(ledXState_t) uartRxRead( UART_USB );
+		   
 			   switch(c)
 			   {
 			   case LED_1_APAGADO:
@@ -838,7 +841,7 @@ int main(void){
 	   if(rxUART3)
 	   {
 		   rxUART3 = false;
-		   c =(ledXState_t) uartRxRead( UART_232 );
+		   
 		   switch(c)
 		   {
 		   case LED_1_APAGADO:
@@ -862,7 +865,7 @@ int main(void){
 		   default:
 			   break;
 		   }
-		   uartWriteByte( UART_232,(char) c);
+		   uartWriteByte( UART_USB,(char) c);
 	   }
    }
 
