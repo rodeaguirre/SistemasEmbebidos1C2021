@@ -381,6 +381,14 @@ Crear un código que permita escribir el DAC en función de lo recibido por la U
 Se leerá continuamente la UART2 y con los caractéres de 0 a 9 se seleccionará que nivel de tensión queremos proporcionarle al DAC. Considerando que el máximo es 3.3V, separamos en niveles que distan de 0.37V cada uno siendo 0 el nivel  correspondiente a 0V y 9 el nivel lo más cercano a 3.3V. 
 Luego, el CH1 del ADC estará loopeado al DAC a través de una resistencia de 10KOhm y el micro deberá enviar por la UART2 el valor leido por el ADC. 
 
+
+## **Camino Lógico:**
+TECLA (0..9) -> TERMINAL (PC) -> UART (USB).RX -> DAC -> (0..3,3v) -> RESISTOR 10KOhm -> ( 0v .. 3,3V) -> RESISTOR -> ADC CH1 -> UART (USB).TX -> TERMINAL (PC) -> TEXTO (PANTALLA)
+
+## **Diagrama de Conexiones**
+![Diagrama de Conexiones](https://lh3.googleusercontent.com/IjVXNO8mUvWyz5Ecn7OKZSR-6RctfDgU4SvTy-mwyFq1Y9OF5w-V7sIj7doa39tPEvCdTjTcDMPwyGWd4XzCs_Ui0XdoN6v01adJdclOjmiF3tQed7v7SbUNKO2x29mbr_jG21eYwFYibaihIwiFyexj-9lKWEH3snSgHvvcRj-NebIDcOI_qh123zakCjRmBDHYmIuTdvRGYz0ixvJl5x2JPDEmGH1-bp4HBsMvKOVF9sON229NQLK1vW-pBNux7eq5nqtw9pVxLnkAaOg8C_ZCmeMjVhnpD3EWuA1tMKpzY5nnXpFtKwPTDYW8Un89PxDi5uQ7ZxJ9Jm_M7_FJuKtX1TK3E_8mekbHvOR3kTkIy0RADdM_mIWVUiH92ynk83kbck5VJaLbX5ofaLRRH-hkqgpsOdyzm1knMDh1GUltOz_4KmNpRJKLmHb95COXH5aZV7gIXKSlEF54ljdJeWstNXR4KIMZWPwcGbGEHU_QR53RuFzVwZk7PYxyt8c4NJpmdqMhuq3LR4zfa_-HZp0eXpOHZq3QA4T9uD8_E-TnhBtinoMq_dQ6pW0uDHpUPeJ8IXpErnCGf3oYWMToTlIpiflBiw-zVNB9Spg84KkDydsx05tAiqwYwdKux6xaZ91F6hjutV-KHURVw24otqPLuHX4xulyN-kNNdGVSVMWNdgLXwbZ-d4wDGGa0eIXVmDLJr1iPNOHYmTg2OcfTAU=w596-h470-no?authuser=1)
+
+
 ## **Implementación**
 
 Para implementar este programa se partió del ejemplo incluido en el firmware_v3  en */firmware_v3/examples/c/sapi/adc_dac*. 
