@@ -1,19 +1,20 @@
 * Trabajo Práctico N'4
-##EJERCICIO 5
 
-#5.1 ENUNCIADO
+EJERCICIO 5
+
+5.1 ENUNCIADO
 
 Este ejercicio propone utilizar el ADC para leer un valor analógico y mostrar luego este valor en la PC a través de la UART USB. 
 
-#5.2 PROGRAMAS UTILIZADOS
+5.2 PROGRAMAS UTILIZADOS
 
 Para resolver este ejercicio se utilizó el ejemplo de adc_dac.c, donde cada 500 ms se lee un valor a través del ADC se lo muestra en la PC y se lo escribe en el DAC.
 
-#5.3 CAMBIOS REALIZADOS
+5.3 CAMBIOS REALIZADOS
 
 Lo que se realizó en este caso fue utilizar el mismo código eliminado la parte del DAC y eliminando una sección de código que hacía titilar un led. 
 
-#5.4 CÓDIGO
+5.4 CÓDIGO
 
 El código utilizado es el siguiente:
 ```c
@@ -265,17 +266,17 @@ int main(void)
 }
 ```
 
-##EJERCICIO 8
+EJERCICIO 8
 
-#8.1 ENUNCIADO
+8.1 ENUNCIADO
 
 Se pide modificar el ejercicio 3 para fowardear lo que se recibe a través de la UART 2 por la UART 3 y viceversa.
 
-#8.2 PROGRAMAS UTILIZADOS
+8.2 PROGRAMAS UTILIZADOS
 
 Se utilizaron los programas rx_interrupt.c, blinky-switch.c y echo.c
 
-#8.3 CAMBIOS REALIZADOS
+8.3 CAMBIOS REALIZADOS
 
 Se modifico el programa rx_interrupt para habilitar la interrupción de la UART3 (UART_232). Se modifico la función que se llaman en la interrupción para que seteen un flag, rxUART2 o rxUART3 dependiendo del caso. En el main y quito la parte de hacer titilar un led y se agregó, en base a blinky-switch, un bloque que lee el estado de los pulsadores cada determinado tiempo y en base a eso prender/apagar leds y mandar un carácter por la UART2. A continuación se verifica si los flags de rx de la UART 2/3 está seateado, y si lo está prender/apagar un led y fowardea el caracter a través de la UART 3/2.
 
@@ -441,7 +442,7 @@ int main(void){
 
 }
 ```
-#8.5 FUNCIONES IMPORTANTES
+8.5 FUNCIONES IMPORTANTES
 
 Las funciones utilizadas en este ejercicio se utilizaron en los anteriores.
 
