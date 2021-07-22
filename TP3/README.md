@@ -230,6 +230,145 @@ void uartInterrupt( uartMap_t uart, bool_t enable )
    }
 }
 ```
+# *Ejercicio 5*
+
+## **Enunciado**
+
+Este ejercicio propone utilizar el ADC para leer un valor analógico y mostrar luego este valor en la PC a través de la UART USB. 
+
+## **Programas Utilizados**
+
+Para resolver este ejercicio se utilizó el ejemplo de adc_dac.c, donde cada 500 ms se lee un valor a través del ADC se lo muestra en la PC y se lo escribe en el DAC.
+
+## **Cambios Realizados**
+
+Lo que se realizó en este caso fue utilizar el mismo código eliminado la parte del DAC y eliminando una sección de código que hacía titilar un led. 
+
+## **Código**
+
+El código utilizado es el siguiente:
+```c
+/*==================[inclusions]=============================================*/
+
+#include "sapi.h"        // <= sAPI header
+
+/*==================[macros and definitions]=================================*/
+
+/*==================[internal data declaration]==============================*/
+
+/*==================[internal functions declaration]=========================*/
+
+/*==================[internal data definition]===============================*/
+
+/*==================[external data definition]===============================*/
+
+/*==================[internal functions definition]==========================*/
+
+/*==================[external functions definition]==========================*/
+
+char* itoa(int value, char* result, int base) {
+   // check that the base if valid
+   if (base < 2 || base > 36) { *result = '\0'; return result; }
+
+   char* ptr = result, *ptr1 = result, tmp_char;
+   int tmp_value;
+
+   do {
+      tmp_value = value;
+      value /= base;
+      *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+   } while ( value );
+
+   // Apply negative sign
+   if (tmp_value < 0) *ptr++ = '-';
+   *ptr-- = '\0';
+   while(ptr1 < ptr) {
+      tmp_char = *ptr;
+      *ptr--= *ptr1;
+      *ptr1++ = tmp_char;
+   }
+   return result;
+}
+
+
+/* FUNCION PRINCIPAL, PUNTO DE ENTRADA AL PROGRAMA LUEGO DE RESET. */
+int main(void){
+
+   /* ------------- INICIALIZACIONES ------------- */
+
+   /* Inicializar la placa */
+   boardConfig();
+
+   /* Inicializar UART_USB a 115200 baudios */
+   uartConfig( UART_USB, 115200 );
+
+   /* Inicializar AnalogIO */
+   /* Posibles configuraciones:
+    *    ADC_ENABLE,  ADC_DISABLE,
+    *    ADC_ENABLE,  ADC_DISABLE,
+    */
+   adcConfig( ADC_ENABLE ); /* ADC */
+
+   /* Configuración de estado inicial del Led */
+   bool_t ledState1 = OFF;
+
+   /* Contador */
+   uint32_t i = 0;
+
+   /* Buffer */
+   char uartBuff[20];
+
+   /* Variable para almacenar el valor leido del ADC CH1 */
+   uint16_t muestra = 0;
+
+   /* Variables de delays no bloqueantes */
+   delay_t delay1;
+
+   /* Inicializar Retardo no bloqueante con tiempo en ms */
+   delayConfig( &delay1, 500 );
+
+   /* ------------- REPETIR POR SIEMPRE ------------- */
+   while(1) {
+
+      /* delayRead retorna TRUE cuando se cumple el tiempo de retardo */
+      if ( delayRead( &delay1 ) ){
+
+         /* Leo la Entrada Analogica AI0 - ADC0 CH1 */
+         muestra = adcRead( CH1 );
+
+         /* Envío la primer parte del mnesaje a la Uart */
+         uartWriteString( UART_USB, "ADC CH1 value: " );
+
+         /* Conversión de muestra entera a ascii con base decimal */
+         itoa( muestra, uartBuff, 10 ); /* 10 significa decimal */
+
+         /* Enviar muestra y Enter */
+         uartWriteString( UART_USB, uartBuff );
+         uartWriteString( UART_USB, ";\r\n" );
+
+      }
+
+   }
+
+   /* NO DEBE LLEGAR NUNCA AQUI, debido a que a este programa no es llamado
+      por ningun S.O. */
+   return 0;
+}
+```
+## **Funciones Importantes**
+```c
+void adcInit(adcInit_t config)
+```
+Configura el ADC para con una frecuencia de sampleo de 200 kHz, una resolución de 10 bits, puede habilitarlo o deshabilitarlo en función del parámetro config.
+```c
+uint16_t adcRead( adcMap_t analogInput )
+```
+que lee genera una lectura en el ADC. Es una función bloqueante.
+```c
+char* itoa(int value, char* result, int base)
+```
+Convierte un número entero en un string.
+
 
 # *Ejercicio 6*
 
@@ -546,4 +685,183 @@ int main(void)
    return 0 ;
 }
 ```
+# *Ejercicio 8*
+
+## **Enunciado**
+
+Se pide modificar el ejercicio 3 para fowardear lo que se recibe a través de la UART 2 por la UART 3 y viceversa.
+
+## **Programas Utilizados**
+
+Se utilizaron los programas rx_interrupt.c, blinky-switch.c y echo.c
+
+## **Cambios Realizados**
+Se modifico el programa rx_interrupt para habilitar la interrupción de la UART3 (UART_232). Se modifico la función que llaman en el interrupt para que seteen un flag. En el main y quito la parte de hacer titilar un led y se agregó, en base a blinky-switch, un bloque que lee el estado de los pulsadores cada determinado tiempo y en base a eso prender/apagar leds y mandar un carácter por la UART2. A continuación se verifica si los flags de rx de la UART 2/3 está seateado, y si lo está prender/apagar un led y fowardea el caracter a través de la UART 3/2.
+
+## **Código**
+```c
+/*==================[inclusions]=============================================*/
+
+#include "sapi.h"     // <= sAPI header
+
+/*==================[macros and definitions]=================================*/
+
+/*==================[internal data declaration]==============================*/
+
+/*==================[internal functions declaration]=========================*/
+
+/*==================[internal data definition]===============================*/
+const uint8_t cantBotones = 3;
+
+typedef enum{
+	LED_1_APAGADO = 'A',
+	LED_2_APAGADO,
+	LED_3_APAGADO,
+	LED_1_PRENDIDO = 'a',
+	LED_2_PRENDIDO,
+	LED_3_PRENDIDO,
+} ledXState_t;
+
+const ledXState_t caracteresLed[][2] = {
+		{LED_1_APAGADO,LED_1_PRENDIDO},
+		{LED_2_APAGADO,LED_2_PRENDIDO},
+		{LED_3_APAGADO,LED_3_PRENDIDO}
+};
+
+bool rxUART2 = false;
+bool rxUART3 = false;
+/*==================[external data definition]===============================*/
+
+/*==================[internal functions definition]==========================*/
+
+/*==================[external functions definition]==========================*/
+void redireccionarUart( void *noUsado )
+{
+	bool rxUART2 = true;
+}
+
+void switchLeds( void *noUsado )
+{
+	bool rxUART3 = true;
+}
+
+
+// FUNCION PRINCIPAL, PUNTO DE ENTRADA AL PROGRAMA LUEGO DE RESET.
+int main(void){
+
+   // ------------- INICIALIZACIONES -------------
+
+   // Inicializar la placa
+   boardConfig();
+
+   // Inicializar UART_USB a 115200 baudios
+   uartConfig( UART_USB, 115200 );
+
+   // Inicializar UART_232 a 115200 baudios
+   uartConfig( UART_232, 115200 );
+
+   uartCallbackSet(UART_USB, UART_RECEIVE, redireccionarUart, NULL);
+   // Habilito todas las interrupciones de UART_USB
+   uartInterrupt(UART_USB, true);
+
+   uartCallbackSet(UART_232, UART_RECEIVE, switchLeds, NULL);
+   // Habilito todas las interrupciones de UART_USB
+   uartInterrupt(UART_232, true);
+
+   delay_t led1Delay[cantBotones];
+   bool valorAnterior[cantBotones];
+
+   for(uint8_t i = 0; i < cantBotones; i++)
+   {
+	   delayConfig( &(led1Delay[i]), 100 );
+	   valorAnterior[i] = 0;
+   }
+
+   bool valor;
+   ledXState_t c;
+
+   // ------------- REPETIR POR SIEMPRE -------------
+   while(1)
+   {
+	   for(uint8_t i = 0; i < cantBotones ;i++)
+	   {
+		   if( delayRead(&(led1Delay[i])))
+		   {
+			   valor = !gpioRead(TEC2+i);
+			   if(valor != valorAnterior[i])
+			   {
+				   gpioWrite(LED1+i,valor);
+				   gpioWrite(LEDR+i,valor);
+				   uartWriteByte( UART_USB,(char) caracteresLed[i][valor]);
+				   valorAnterior[i] = valor;
+			   }
+		   }
+	   }
+	   if(rxUART2)
+	   {
+		   rxUART2 = false;
+		   c =(ledXState_t) uartRxRead( UART_USB );
+			   switch(c)
+			   {
+			   case LED_1_APAGADO:
+				   gpioWrite(LEDR,OFF);
+				   break;
+			   case LED_1_PRENDIDO:
+				   gpioWrite(LEDR,ON);
+				   break;
+			   case LED_2_APAGADO:
+				   gpioWrite(LEDG,OFF);
+				   break;
+			   case LED_2_PRENDIDO:
+				   gpioWrite(LEDG,ON);
+				   break;
+			   case LED_3_APAGADO:
+				   gpioWrite(LEDB,OFF);
+				   break;
+			   case LED_3_PRENDIDO:
+				   gpioWrite(LEDB,ON);
+				   break;
+			   default:
+				   break;
+			   }
+
+			uartWriteByte( UART_232,(char) c);
+	   }
+	   if(rxUART3)
+	   {
+		   rxUART3 = false;
+		   c =(ledXState_t) uartRxRead( UART_232 );
+		   switch(c)
+		   {
+		   case LED_1_APAGADO:
+			   gpioWrite(LED1,OFF);
+			   break;
+		   case LED_1_PRENDIDO:
+			   gpioWrite(LED1,ON);
+			   break;
+		   case LED_2_APAGADO:
+			   gpioWrite(LED2,OFF);
+			   break;
+		   case LED_2_PRENDIDO:
+			   gpioWrite(LED2,ON);
+			   break;
+		   case LED_3_APAGADO:
+			   gpioWrite(LED3,OFF);
+			   break;
+		   case LED_3_PRENDIDO:
+			   gpioWrite(LED3,ON);
+			   break;
+		   default:
+			   break;
+		   }
+		   uartWriteByte( UART_232,(char) c);
+	   }
+   }
+
+}
+```
+## **Funciones Importantes**
+
+Las funciones utilizadas en este ejercicio se utilizaron en los anteriores.
+
 
