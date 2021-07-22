@@ -746,13 +746,13 @@ ledXState_t c;
 /*==================[external functions definition]==========================*/
 void redireccionarUart( void *noUsado )
 {
-	bool rxUART2 = true;
+	rxUART2 = true;
 	c =(ledXState_t) uartRxRead( UART_USB );
 }
 
 void switchLeds( void *noUsado )
 {
-	bool rxUART3 = true;
+	rxUART3 = true;
 	c =(ledXState_t) uartRxRead( UART_232 );
 }
 
